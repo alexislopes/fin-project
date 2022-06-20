@@ -4,6 +4,7 @@
   <a href="#/home">home</a>
   <a href="#/recursos">recursos</a>
   <a href="#/objetivos">objetivos</a>
+  <a href="#/planejamentos">planejamentos</a>
 </div>
 
 
@@ -15,13 +16,15 @@ import { ref, computed } from 'vue'
 import Home from "./Home.vue"
 import Recursos from "./Recursos.vue"
 import Objetivos from "./Objetivos.vue"
+import Planejamentos from "./Planejamentos.vue"
 import NotFound from "./NotFound.vue"
 
 const routes = {
   "": Home,
   "/home": Home,
   "/recursos": Recursos,
-  "/objetivos": Objetivos}
+  "/objetivos": Objetivos,
+  "/planejamentos": Planejamentos}
  
 
  const currentPath = ref(window.location.hash)
