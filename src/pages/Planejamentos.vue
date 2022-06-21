@@ -6,9 +6,14 @@
 
 <div v-for="recurso in store.recursos">
 {{recurso.nome}}
+  <label :for="recurso.nome">
+Renda
+    <input @input="setRenda($event)" :id="recurso.nome" type="number">
+  </label>
 <div v-for="objetivo in store.objetivos">
   
   <h1>{{objetivo.nome}}</h1>
+
   
   <label v-if="objetivo.isFixa > 0" :for="`${recurso.nome}+${objetivo.nome}`">
 Valor
@@ -35,6 +40,7 @@ const planejamento = store.recursos.map(recurso => {
   return {
     //@ts-ignore
     recurso: recurso.nome,
+    renda: 0,
     objetivos: store.objetivos.map(objetivo => {
       //@ts-ignore
       return { objetivo: objetivo.nome, porcentagem: 0, valor: 0}
@@ -42,6 +48,16 @@ const planejamento = store.recursos.map(recurso => {
   }
 })
 
+function setRenda(v) {
+  const recurso = v.target.id;
+  const renda = v.target.value;
+
+  planejamento.forEach(planejamento => {
+    if(planejamento.recurso === recurso) {
+      planejamento.renda = renda;
+    }
+  })
+}
 
 function setValorObjetivo(v: Event) {
 

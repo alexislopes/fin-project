@@ -21,9 +21,14 @@ export const useStore = defineStore('main', {
     //@ts-ignore
     orderedPlanejamentos: (state) => state.planejamentos.sort((a, b) => a.data > b.data ? 1 : -1),
     //@ts-ignore
-    lastPlanejameto: () => this.orderedPlanejamentos[0] ,
+    lastPlanejameto() { return this.orderedPlanejamentos[0]} ,
     //@ts-ignore
-    isThisMonth: () => new Date(this.lastPlanejamento.data).getMonth() + new Date(this.lastPlanejamento.data).getFullYear() === new Date().getMonth() + new Date().getFullYear()
+    isThisMonth() { 
+      const planejamentoDate = new Date(this.lastPlanejameto.data)
+      const hoje = new Date()
+      return planejamentoDate.getMonth() + planejamentoDate.getFullYear() === hoje.getMonth() + hoje.getFullYear()
+    
+    }//return new Date(this.lastPlanejamento.data).getMonth() + new Date(this.lastPlanejamento.data).getFullYear() === new Date().getMonth() + new Date().getFullYear() }
   },
   persist: {
     key: "main-store"
