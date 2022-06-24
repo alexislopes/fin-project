@@ -1,13 +1,5 @@
 <template>
-<div class="flex gap-2 place-content-center">
-
-  <a href="#/home">home</a>
-  <a href="#/recursos">recursos</a>
-  <a href="#/objetivos">objetivos</a>
-  <a href="#/planejamentos">planejamentos</a>
-</div>
-
-
+<Nav />
 <component :is="currentView" />
 </template>
 
@@ -18,6 +10,7 @@ import Recursos from "./Recursos.vue"
 import Objetivos from "./Objetivos.vue"
 import Planejamentos from "./Planejamentos.vue"
 import NotFound from "./NotFound.vue"
+import Nav from "../components/Nav.vue"
 
 const routes = {
   "": Home,

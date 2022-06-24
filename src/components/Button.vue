@@ -1,11 +1,14 @@
 <template>
-<button>
-  button
+<button class=" p-2 rounded-lg h-fit font-poppins bg-slate-200 shadow-md font-medium">
+{{label}}
 </button>
 </template>
 
 <script setup lang="ts">
- defineProps<{ value:{type: string, default: "button"} }>();
+ 
+ defineProps({
+  label: {type: String}
+ });
 
 
 
