@@ -22,6 +22,7 @@ export const useStore = defineStore('main', {
     orderedPlanejamentos: (state) => state.planejamentos.sort((a, b) => a.data > b.data ? 1 : -1),
     //@ts-ignore
     lastPlanejameto() { return this.orderedPlanejamentos[0]} ,
+    rendaTotal() {return this.lastPlanejameto.planejamento.reduce((a, b) => Number(a.renda) + Number(b.renda) )},
     //@ts-ignore
     isThisMonth() { 
       const planejamentoDate = new Date(this.lastPlanejameto.data)

@@ -1,11 +1,16 @@
 <template>
-<h1>objetivos</h1>
 
-<div v-for="objetivo in store.objetivos">
-  <p>{{objetivo}}</p>
+<div class="flex gap-x-2">
+  <div class="max-w-sm shadow-md p-4 rounded-lg" v-for="objetivo in store.objetivos">
+    <p>{{objetivo.nome}}</p>
+  </div>
 </div>
-<label for="fixa">
-  <input id="fixa" type="checkbox" v-model="fixa">
+
+<div v-show="false">
+
+  
+  <label for="fixa">
+    <input id="fixa" type="checkbox" v-model="fixa">
   Objetivo com valor fixo?
 </label>
 
@@ -14,16 +19,6 @@
   <input type="text" id="descricao" v-model="objetivo.descricao">
 </label>
 
-<!-- <label v-if="!fixa" for="porcentagem">
-  Porcentagem
-  <input type="number" id="porcentagem" v-model="objetivo.porcentagem">
-</label>
-
-<label v-if="fixa" for="valor">
-  Valor
-  <input type="number" id="valor" v-model="objetivo.valor">
-</label> -->
-
 <label for="nome">
   Nome
   <input type="text" id="nome" v-model="objetivo.nome">
@@ -31,6 +26,7 @@
 
 <button :disabled="objetivo.nome == '' || objetivo.descricao == ''" @click="saveObjetivo">salvar objetivo</button>
 
+  </div>
 </template>
 
 <script setup lang="ts">

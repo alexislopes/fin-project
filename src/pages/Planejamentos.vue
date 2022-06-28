@@ -55,6 +55,8 @@ import Button from "../components/Button.vue"
 
 import { useStore } from "../store/main"
 
+import {currency, percentage } from "../utils/formatters"
+
 const store = useStore();
 
 
@@ -69,14 +71,6 @@ const planejamento = store.recursos.map(recurso => {
     })
   }
 })
-
-function currency(amount) {
-  return `R$ ${amount}`
-}
-
-function percentage(value) {
-  return `${value}%`
-}
 
 function setRenda(v) {
   const recurso = v.target.id;

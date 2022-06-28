@@ -1,14 +1,19 @@
 <template>
-<div v-for="recurso in store.recursos">
-  <p>{{recurso}}</p>
+<div class="flex gap-x-2">
+  <div class="max-w-sm shadow-md p-4 rounded-lg" v-for="recurso in store.recursos">
+    <p>{{recurso.nome}}</p>
+  </div>
 </div>
 
-<label for="nome">
-  Nome
+<div v-show="false">
+
+  <label for="nome">
+    Nome
   <input type="text" id="descricao" v-model="recurso.nome">
 </label>
 
 <button :disabled="recurso.nome == '' " @click="saveRecurso">salvar recurso</button>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,16 +1,32 @@
 <template>
 
+<div class="max-w-sm">
+  <div class="flex justify-between">
+    <p class="font-poppins">Renda</p>
+    <p class="font-poppins">{{currency(store.rendaTotal)}}</p>
+  </div>
+  <div class="flex justify-between" v-for="planejamento in store.lastPlanejameto.planejamento">
+    <p class="font-poppins">{{planejamento.recurso}}</p>
 
-<div v-for="objd in distribuicaoObjetivos">
+<div>
+
+  <p class="font-poppins">{{currency(planejamento.renda)}}</p>
+    <p class="font-poppins text-xs text-end">{{percentage((planejamento.renda / store.rendaTotal ) * 100)}}</p>
+</div>
+  </div>
+</div>
+
+<!-- <div v-for="objd in distribuicaoObjetivos">
 {{objd.objetivo}}
 <div v-for="dist in objd.distribuicao" >
   {{dist.recurso}} {{dist.montante.toFixed(2)}}
 </div>
-</div>
+</div> -->
 </template>
 
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
+import {currency, percentage } from "../utils/formatters"
 
 import { useStore } from "../store/main"
 
