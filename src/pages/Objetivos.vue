@@ -1,12 +1,12 @@
 <template>
-
+<Button @click="showModal = true" class="text-medium" label="+ Criar Objetivo" />
 <div class="flex gap-x-2">
   <div class="max-w-sm shadow-md p-4 rounded-lg" v-for="objetivo in store.objetivos">
     <p>{{objetivo.nome}}</p>
   </div>
 </div>
 
-<div v-show="false">
+<!-- <div v-show="false">
 
   
   <label for="fixa">
@@ -26,36 +26,30 @@
 
 <button :disabled="objetivo.nome == '' || objetivo.descricao == ''" @click="saveObjetivo">salvar objetivo</button>
 
-  </div>
+  </div> -->
+
+  <Modal v-show="showModal">
+    <ObjetivoForm @close="showModal = false" />
+  </Modal>
 </template>
 
 <script setup lang="ts">
 
-import {reactive, ref} from "vue"
+import Modal from '../components/Modal.vue'
+import Button from '../components/Button.vue'
+import ObjetivoForm from '../components/ObjetivoForm.vue'
+
+import { ref} from "vue"
 
 import { useStore } from "../store/main"
 
   const store = useStore();
+  const showModal = ref(false)
 
 
 
-const fixa = ref(false);
 
- 
 
-const objetivo = reactive({
-  descricao: "",
-  nome: "",
-})
 
-function saveObjetivo() {
-  store.$patch(state => {
-    //@ts-ignore
-    state.objetivos.push({descricao: objetivo.descricao,  nome: objetivo.nome, isFixa: fixa})
-  });
-
-  objetivo.nome = "";
-  objetivo.descricao = "";
-}
 
 </script> 

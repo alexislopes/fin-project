@@ -1,17 +1,4 @@
 <template>
-<Modal v-show="showModal">
-  <div class="gap-2 flex flex-col">
-    <p @click="showModal = false" style="color: rgb(209 213 219)" class="text-end cursor-pointer" onmouseout="this.style.color = 'rgb(209 213 219)'" onmouseover="this.style.color = 'red'">x</p>
-    <div class="rounded-md" style="background-color: rgb(209 213 219)">
-
-      <label class="font-poppins flex flex-col p-2 text-sm font-medium gap-2" style="color: gray;" for="recurso">
-        Recurso
-        <input  class="outline-none text-base" style="background-color: transparent; color: black;" type="text" id="recurso">
-      </label>
-    </div>
-      <Button class="text-xs w-full" label="Criar Recurso" />
-  </div>
-</Modal>
 <div class="max-w-sm">
   <div class="flex justify-between">
     <p class="font-poppins">Renda</p>
@@ -44,7 +31,7 @@ import Button from "../components/Button.vue"
 
 import { useStore } from "../store/main"
 
-const showModal = ref(true)
+
 
 const store = useStore();
 
