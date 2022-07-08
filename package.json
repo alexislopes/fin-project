@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "pinia": "^2.0.14",
     "pinia-plugin-persistedstate": "^1.6.1",
     "uuid": "^8.3.2",
@@ -16,6 +17,7 @@
     "vue-router": "^4.0.16"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "@types/uuid": "^8.3.4",
     "@vitejs/plugin-vue": "^2.3.3",
     "autoprefixer": "^10.4.7",

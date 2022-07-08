@@ -13,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+import { v4 as uuidv4 } from 'uuid';
 import { reactive } from "vue"
 import { useStore } from "../store/main"
 import Button from "../components/Button.vue"
@@ -27,10 +28,12 @@ const handleClose = () => {
   const recurso = reactive({nome: ""})
 
 function saveRecurso() {
-  store.$patch(state => {
-    //@ts-ignore
-    state.recursos.push({nome: recurso.nome})
-  })
+  // store.$patch(state => {
+  //   //@ts-ignore
+  //   state.recursos.push({nome: recurso.nome})
+  // })
+
+  store.saveRecurso({id: uuidv4(), nome: recurso.nome})
 
   recurso.nome = '';
   handleClose()

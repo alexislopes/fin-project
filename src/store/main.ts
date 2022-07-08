@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import {Objetivo} from "../models/objetivo.model"
+
 
 // export type MainState = {
 //   objetivos: Objetivo[],
@@ -19,17 +19,27 @@ export const useStore = defineStore('main', {
     }
   },
   actions: {
-    getObjetivoById(objetivoId) {
-      return this.objetivos.find(objetivo => objetivo.id === objetivoId);
-    },
-    getRecursoById(recursoId) {
-      return this.recursos.find(recurso => recurso.id === recursoId);
-    },
+    
     saveObjetivo(objetivo) {
-      this.objetivos.push(objetivo)
+      this.objetivos.push(objetivo);
     },
     saveRecurso(recurso) {
-      this.recursos.push(recurso)
+      this.recursos.push(recurso);
+    },
+    saveRecursoMes(recursoMes) {
+      this.recursosMes.push(recursoMes);
+    },
+    saveObjetivoMes(objetivoMes) {
+      this.objetivosMes.push(objetivoMes);
+    },
+    updateRecursoMes(recursoMesAlterado) {
+      this.recursosMes.forEach(recursoMes => {
+        if(recursoMesAlterado.id === recursoMes.id){
+          recursoMes.recursoId = recursoMesAlterado.recursoId;
+          recursoMes.montante = recursoMesAlterado.montante;
+          recursoMes.date = recursoMesAlterado.date;
+        }
+      }) 
     },
     updateObjetivo(objetivoAlterado) {
       this.objetivos.forEach(objetivo => {
@@ -38,6 +48,25 @@ export const useStore = defineStore('main', {
         }
       })
     },
+
+    getThisMonthRecursoMes(){
+      return this.recursosMes.filter(recursosMes =>  new Date().getMonth() + new Date().getMonth() === new Date(recursosMes.date).getMonth() + new Date(recursosMes.date).getMonth() )
+    },
+    getThisMonthObjetivoMes() {
+      return this.objetivosMes.filter(objetivoMes =>  new Date().getMonth() + new Date().getMonth() === new Date(objetivoMes.date).getMonth() + new Date(objetivoMes.date).getMonth() ).map(objetivoMes => Object.assign(objetivoMes, {
+        recurso: this.recursos.find(recurso => recurso.id === objetivoMes.recursoId),
+        objetivo: this.objetivos.find(objetivo => objetivo.id === objetivoMes.objetivoId),
+        recursoMes: this.recursosMes.filter(recursosMes =>  new Date().getMonth() + new Date().getMonth() === new Date(recursosMes.date).getMonth() + new Date(recursosMes.date).getMonth() ).find(recursoMes => recursoMes.recursoId === objetivoMes.recursoId)
+      })) 
+    },
+    getObjetivoById(objetivoId) {
+      console.log("🚀 ~ file: main.ts ~ line 23 ~ getObjetivoById ~ objetivoId", objetivoId)
+      return this.objetivos.find(objetivo => objetivo.id === objetivoId);
+    },
+    getRecursoById(recursoId) {
+      return this.recursos.find(recurso => recurso.id === recursoId);
+    },
+    
     updateRecurso(recursoAlterado) {
       this.recursos.forEach(recurso => {
         if(recursoAlterado.id === recurso.id) {
@@ -47,18 +76,7 @@ export const useStore = defineStore('main', {
     }
   },
   getters: {
-    // //@ts-ignore
-    // orderedPlanejamentos: (state) => state.planejamentos.sort((a, b) => a.data > b.data ? 1 : -1),
-    // //@ts-ignore
-    // lastPlanejameto() { return this.orderedPlanejamentos[0]} ,
-    // rendaTotal() {return this.lastPlanejameto.planejamento.reduce((a, b) => Number(a.renda) + Number(b.renda) )},
-    // //@ts-ignore
-    // isThisMonth() { 
-    //   const planejamentoDate = new Date(this.lastPlanejameto.data)
-    //   const hoje = new Date()
-    //   return planejamentoDate.getMonth() + planejamentoDate.getFullYear() === hoje.getMonth() + hoje.getFullYear()
     
-    //}//return new Date(this.lastPlanejamento.data).getMonth() + new Date(this.lastPlanejamento.data).getFullYear() === new Date().getMonth() + new Date().getFullYear() }
   },
   persist: {
     key: "main-store"
