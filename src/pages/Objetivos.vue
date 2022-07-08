@@ -1,9 +1,5 @@
 <template>
-<div class="flex justify-between">
-  <p @click="now = now-2629746000">&lt</p>
-  <p>{{capitalize(new Date(now).toLocaleString("pt-BR", { month: "long" }))}}</p>
-  <p @click="now = now-2629746000">></p>
-</div>
+<MonthPicker @change="now = $event" :timestamp="now" />
 <Button @click="showModal = true" class="text-medium" label="+ Criar Objetivo" />
 <div class="flex gap-x-2">
   <div class="max-w-sm shadow-md p-4 flex flex-col gap-2 rounded-lg" v-for="objetivo in store.objetivos">
@@ -39,6 +35,7 @@ import Modal from '../components/Modal.vue'
 import Button from '../components/Button.vue'
 import ObjetivoForm from '../components/ObjetivoForm.vue'
 import ObjetivoMesForm from '../components/ObjetivoMesForm.vue'
+import MonthPicker from '../components/MonthPicker.vue'
 
 import _ from "lodash"
 
