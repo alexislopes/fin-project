@@ -1,5 +1,7 @@
 <template>
-<MonthPicker @change="now = $event" :timestamp="now" />
+<div>
+
+  <MonthPicker @change="now = $event" :timestamp="now" />
 <Button @click="showModal = true" class="text-medium" label="+ Criar Objetivo" />
 <div class="flex gap-x-2">
   <div class="max-w-sm shadow-md p-4 flex flex-col gap-2 rounded-lg" v-for="objetivo in store.objetivos">
@@ -27,6 +29,7 @@
   <Modal v-show="objetivoId != 'undefined'">
     <ObjetivoMesForm @close="objetivoId = 'undefined'" :objetivoId="objetivoId" />
   </Modal>
+          </div>
 </template>
 
 <script setup lang="ts">

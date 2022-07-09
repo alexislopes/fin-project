@@ -5,7 +5,7 @@ import Main from './pages/Main.vue'
 </script>
 
 <template>
-  <div class="container mx-auto p-4">
+  <div >
 
     <Main />
   </div>

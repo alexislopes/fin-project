@@ -12,7 +12,8 @@ import { capitalize } from "../utils/formatters";
 const props = defineProps({
   timestamp: {
     type: Number,
-    required: true
+    required: true,
+    default: () => new Date().getTime()
   }
 });
 

@@ -1,6 +1,10 @@
 <template>
-<Nav />
-<component :is="currentView" />
+<div class="flex">
+    <Nav />
+  <div class="p-16 w-full">
+    <component :is="currentView" />
+  </div>
+</div>
 </template>
 
 <script setup lang="ts">
