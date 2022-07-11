@@ -1,8 +1,8 @@
 <template>
 <aside :class="{'is-expanded' : isExpanded }" class="min-h-screen flex rounded-md text-slate-500 shadow-lg w-[calc(2rem_-_32px)]] overflow-hidden transition duration-200 ease-out  p-4 flex-col gap-2">
-  <div class="logo mb-4">
+  <div class="logo mr-0 mb-4">
     
-    <img class="w-8 " src="../assets/logo.png" alt="Logo">
+    <img class="w-12" src="../assets/logo.png" alt="Logo">
   </div>
 
 <a href="#/objetivos">

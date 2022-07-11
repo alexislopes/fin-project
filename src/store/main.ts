@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { isSameMonth } from '../utils/comparators';
 
 
 // export type MainState = {
@@ -49,8 +50,28 @@ export const useStore = defineStore('main', {
       })
     },
 
-    getThisMonthRecursoMes(){
-      return this.recursosMes.filter(recursosMes =>  new Date().getMonth() + new Date().getMonth() === new Date(recursosMes.date).getMonth() + new Date(recursosMes.date).getMonth() )
+    getRecursoMes(timestamp: number){
+      return this.recursosMes.filter(async recursoMes => {
+        return await isSameMonth(timestamp, recursoMes.date)
+     })
+    },
+
+    getAllRecursoWithMontanteByMonth(timestamp: number) {
+      console.log("🚀 ~ file: main.ts ~ line 60 ~ getAllRecursoWithMontanteByMonth ~ timestamp", new Date(timestamp))
+      return this.recursos.map(recurso => 
+        Object.assign(recurso, {
+          mes: timestamp,
+          montante: this.recursosMes
+            .filter(async rm => await isSameMonth(timestamp, rm.date) )
+            .find(rm => rm.recursoId === recurso.id)
+            .montante || 0
+        }));
+    },
+
+    getRecursoMesByRecursoId(timestamp: number, recursoId: string){
+      return this.recursosMes.filter(rm => rm.recursoId === recursoId).find(async recursoMes => {
+        return await isSameMonth(timestamp, recursoMes.date);
+     })
     },
     getThisMonthObjetivoMes() {
       return this.objetivosMes.filter(objetivoMes =>  new Date().getMonth() + new Date().getMonth() === new Date(objetivoMes.date).getMonth() + new Date(objetivoMes.date).getMonth() ).map(objetivoMes => Object.assign(objetivoMes, {
