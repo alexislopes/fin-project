@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { reactive, ref } from "vue"
 import { useStore } from "../store/main"
 import Button from "../components/Button.vue"
+import { setObjetivo } from '../firebase';
 
 const emit = defineEmits(['close'])
 const handleClose = () => {
@@ -37,7 +38,8 @@ function saveObjetivo() {
   //   state.objetivos.push({descricao: objetivo.descricao,  nome: objetivo.nome, isFixa: fixa})
   // });
 
-  store.saveObjetivo({descricao: objetivo.descricao,  id: uuidv4()})
+  // store.saveObjetivo({descricao: objetivo.descricao,  id: uuidv4()})
+  setObjetivo({ descricao: objetivo.descricao })
 
   objetivo.descricao = "";
   handleClose()

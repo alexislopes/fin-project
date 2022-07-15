@@ -1,7 +1,7 @@
 <template>
 <div class="flex gap-2 justify-center p-6">
   <p class="font-poppins cursor-pointer py-2 px-1" @click="$emit('change', timestamp-2629746000)">&lt</p>
-  <p class="font-poppins border-solid border-x border-y h-fit border-black py-1 px-4 rounded-full">{{capitalize(new Date(timestamp).toLocaleString("pt-BR", { month: "long" }))}}</p>
+  <p class="font-poppins border-solid border-x border-y h-fit border-black py-1 px-4 rounded-full">{{`${capitalize(new Date(timestamp).toLocaleString("pt-BR", { month: "long" }))} ${new Date(timestamp).getFullYear()}`}}</p>
   <p class="font-poppins cursor-pointer py-2 px-1" @click="$emit('change', timestamp+2629746000)">&gt</p>
 </div>
 </template>

@@ -9,3 +9,4 @@ declare module '*.vue' {
 
 declare module 'vue-csv-import'
 declare module 'uuid'
+declare module 'firebase'

@@ -5,7 +5,7 @@
 
       <label class="font-poppins flex flex-col p-2 text-sm font-medium gap-2" for="recurso">
         Recurso
-        <input v-model="recurso.nome" class="outline-none text-base bg-transparent" type="text" id="recurso">
+        <input v-model="nome" class="outline-none text-base bg-transparent" type="text" id="recurso">
       </label>
     </div>
       <Button @click="saveRecurso" class="text-xs w-full" label="Criar Recurso" />
@@ -14,9 +14,10 @@
 
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid';
-import { reactive } from "vue"
+import { ref } from "vue"
 import { useStore } from "../store/main"
 import Button from "../components/Button.vue"
+import { setRecurso } from '../firebase';
 
 const emit = defineEmits(['close'])
 const handleClose = () => {
@@ -25,7 +26,7 @@ const handleClose = () => {
 
   const store = useStore();
 
-  const recurso = reactive({nome: ""})
+  const nome = ref('')
 
 function saveRecurso() {
   // store.$patch(state => {
@@ -33,9 +34,9 @@ function saveRecurso() {
   //   state.recursos.push({nome: recurso.nome})
   // })
 
-  store.saveRecurso({id: uuidv4(), nome: recurso.nome})
+  setRecurso({nome: nome.value})
 
-  recurso.nome = '';
+  nome.value = '';
   handleClose()
 }
 

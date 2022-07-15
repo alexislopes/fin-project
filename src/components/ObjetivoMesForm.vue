@@ -5,7 +5,7 @@
     <label for="recurso">
       Recurso
       <select class="w-full" @change="recursoId = $event.target.value" :value="recursoId" name="recurso" id="recurso">
-        <option v-for="recurso in store.recursos" :value="recurso.id">{{recurso.nome}}</option>
+        <option v-for="recurso in recursos" :value="recurso.id">{{recurso.nome}}</option>
       </select>
     </label>
     
@@ -29,8 +29,10 @@
 <script setup lang="ts">
 import { useStore } from "../store/main"
 import {ref, computed, toRefs} from "vue"
-import { v4 as uuidv4 } from 'uuid';
 import Button from "../components/Button.vue"
+import { setObjetivoMes, db } from "../firebase";
+import { collection, onSnapshot } from "@firebase/firestore"
+
 const props = defineProps({
   objetivoId: {
     type: String || undefined,
@@ -48,6 +50,13 @@ const objetivo = computed(() => {
   return store.getObjetivoById(objetivoId.value)
 })
 
+const recursos = ref([]);
+
+onSnapshot(collection(db, "recursos"), (snapshot) => {
+    recursos.value = [];
+    snapshot.forEach(doc => recursos.value.push(doc.data()))
+  })
+// getRecursos().then(data => recursos.value = data)
 
 const emit = defineEmits(['close'])
 const handleClose = () => {
@@ -59,7 +68,8 @@ const handleClose = () => {
   const store = useStore();
 
   function saveObjetivoMes() {
-    store.saveObjetivoMes({id: uuidv4(), objetivoId: objetivoId.value, recursoId: recursoId.value, valor: valor.value, date: new Date().getTime(), isFixa: isFixa.value})
+    setObjetivoMes({objetivoId: objetivoId.value, isFixa: isFixa.value, valor: valor.value, recursoId: recursoId.value})
+    // store.saveObjetivoMes({id: uuidv4(), objetivoId: objetivoId.value, recursoId: recursoId.value, valor: valor.value, date: new Date().getTime(), isFixa: isFixa.value})
     handleClose()
   }
 

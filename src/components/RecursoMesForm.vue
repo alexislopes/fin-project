@@ -17,6 +17,7 @@ import { useStore } from "../store/main"
 import {ref, computed, toRefs} from "vue"
 import { v4 as uuidv4 } from 'uuid';
 import Button from "../components/Button.vue"
+import {setRecursoMes} from "../firebase"
 const props = defineProps({
   recursoId: {
     type: String || undefined,
@@ -43,8 +44,8 @@ const handleClose = () => {
   const store = useStore();
 
   function saveRecursoMes() {
-    console.log(recurso)
-    store.saveRecursoMes({id: uuidv4(), recursoId: recursoId.value, montante: montante.value, date: new Date().getTime()})
+    setRecursoMes({recursoId: recursoId.value, montante: montante.value})
+    // store.saveRecursoMes({id: uuidv4(), recursoId: recursoId.value, montante: montante.value, date: new Date().getTime()})
     handleClose()
   }
 
