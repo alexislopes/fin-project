@@ -2,14 +2,15 @@
 <div>
 
   <MonthPicker @change="now = $event" :timestamp="now" />
-  <div class="flex ">
+  <div v-if="objetivoMes.length" class="flex ">
 
   <div class="w-full content-center">
 
  
 <Button @click="showModal = true" class="text-medium" label="+ Criar Objetivo" />
 <div class="flex gap-x-2">
-  <div class="shadow-md p-4 flex flex-col gap-2 rounded-lg" v-for="objetivo in objetivosDistribuidos">
+  <Card v-for="objetivo in objetivosDistribuidos">
+ 
      <div>
       <p class="font-poppins">{{objetivo.descricao}}</p>
     <div class="flex flex-col min-w-[8rem] gap-2" v-for="recurso in objetivo.recursos">
@@ -21,29 +22,63 @@
       <p class="text-xs float-right text-gray-300 font-poppins">{{currency(objetivo.soma.toFixed(2))}}</p>
     </div> 
     <p @click="objetivoId = objetivo.id" class="text-medium text-center text-black cursor-pointer">+</p>
-  </div>
+ 
+  </Card>
 </div>
- </div>
-<div class="max-w-fit p-4">
-  <div class="font-poppins shadow-md w-max p-4 flex flex-col gap-2 rounded-lg">
-    <p>
-      Total Poupado
-    </p>
-    <div class="flex gap-4">
-      <p>{{currency(totalPoupado.total)}}</p> 
-      <p class="text-gray-400">{{percentage(totalPoupado.porcentagem)}}</p> 
+<div class="my-4 flex flex-col gap-2">
+
+  <div class="bg-gray-200 rounded-lg p-8 w-fit" v-for="oom in objetivosComObjetivoMes" >
+  <div class="font-poppins justify-between flex">
+    <p class="font-poppins text-lg">{{oom[0].nome}}</p>
+    <p>{{percentage(oom.map(o => o.valor).reduce((a, b) => a + b, 0))}}</p>
+
+  </div>
+  <div class="flex flex-column" v-for="om in oom" >
+  <div >
+    <p class="font-poppins text-sm" >{{om.descricao}}</p>
+    <div>
+      <input  :value="om.valor" @input="handleSlide" type="range" :id="om.recursoId + ' ' + om.objetivoId" />
+      <input @input="handleSlide" class="bg-transparent px-4" type="number" name="" :value="om.valor" :id="om.recursoId + ' ' + om.objetivoId">
     </div>
   </div>
+  </div>
 </div>
+    </div>
+
+ </div>
+<div class="max-w-fit p-4 font-poppins">
+  
+
+    <Card class="w-max">
+      <p> Total Poupado </p>
+      <div class="flex gap-4">
+        <p>{{currency(totalPoupado.total)}}</p> 
+        <p class="text-gray-400">{{percentage(totalPoupado.porcentagem)}}</p>
+      </div>
+
+      <div v-for="tr in totalPoupadoPorRecurso">
+        <p>{{tr.recurso}}</p>
+        <p>{{currency(tr.total.toFixed(2))}}</p>
+      </div>
+    </Card>
+</div>
+</div>
+<div v-else>
+  <p v-if="now > new Date().getTime()">Mes ainda nao foi planejado</p>
+  <p v-else>Mes nao foi planejado</p>
 </div>
 
 
   <Modal v-show="showModal">
-    <ObjetivoForm @close="showModal = false" />
+    <Card>
+      <ObjetivoForm @close="showModal = false" />
+    </Card>
   </Modal>
 
   <Modal v-show="objetivoId != 'undefined'">
-    <ObjetivoMesForm @close="objetivoId = 'undefined'" :objetivoId="objetivoId" />
+    <Card>
+      <ObjetivoMesForm @close="objetivoId = 'undefined'" :objetivoId="objetivoId" />
+    </Card>
   </Modal>
           </div>
 </template>
@@ -51,6 +86,7 @@
 <script setup lang="ts">
 
 import Modal from '../components/Modal.vue'
+import Card from '../components/Card.vue'
 import Button from '../components/Button.vue'
 import ObjetivoForm from '../components/ObjetivoForm.vue'
 import ObjetivoMesForm from '../components/ObjetivoMesForm.vue'
@@ -103,7 +139,18 @@ import { isSameMonth } from '../utils/comparators'
     })
   })
 
-  
+  function handleSlide(e) {
+    const ids = e.target.id.split(" ")
+    const recursoId = ids.shift();
+    const objetivoId = ids.shift();
+
+    objetivoMes.value.forEach(om => {
+      if(om.recursoId === recursoId && om.objetivoId === objetivoId) {
+        om.valor = Number(e.target.value);
+      }
+    })
+  console.log("🚀 ~ file: Objetivos.vue ~ line 139 ~ handleSlide ~ e", e)
+  }
 
   const objetivosDistribuidos = computed(  () => { 
     return  objetivos.value.map(   objetivo => {
@@ -119,6 +166,7 @@ import { isSameMonth } from '../utils/comparators'
 
           return  {
             nome, 
+            id: recursoId,
             valor: isFixa ? valor : (valor / 100) * (montante * 0.2 - totalFixos)
             }
         })
@@ -132,6 +180,15 @@ import { isSameMonth } from '../utils/comparators'
     })
   });
 
+  const porcentagemObjetivosNaoFixos = computed(() => {
+    return recursos.value.map(recurso => {
+      return {
+        recurso: recurso.nome,
+        porcentagem: objetivoMes.value.filter(om => om.recursoId === recurso.id).filter(oom => !oom.isFixa).map(m => m.valor).reduce((a, b) => a + b, 0)
+      }
+    })
+  })
+
   const totalRecursos = computed(() => {
     let soma = 0;
     recursoMes.value.forEach(recursoM => { soma+=recursoM.montante })
@@ -142,15 +199,35 @@ import { isSameMonth } from '../utils/comparators'
     let soma = 0
     objetivosDistribuidos.value.forEach(v => {
       soma+=v.soma
-      
     })
-    console.log(totalRecursos)
     return {total: soma.toFixed(2), porcentagem: (100 * soma) / totalRecursos.value.toFixed(2)}
+  })
+
+  const totalPoupadoPorRecurso = computed(() => {
+    return recursos.value.map(recurso => {
+      return {
+        recurso: recurso.nome,
+        total: objetivosDistribuidos.value.map(od => od.recursos.find(r => r.nome === recurso.nome).valor).reduce((a, b) => a + b, 0)
+      }
+    })
+  })
+
+  const objetivosComObjetivoMes = computed(() => {
+    return _.groupBy(objetivoMes.value.map(objetivo => {
+      const { nome } = recursos.value.find(recurso => recurso.id === objetivo.recursoId)
+      const { descricao } = objetivos.value.find(obj => obj.id === objetivo.objetivoId)
+      return Object.assign(objetivo, {
+        nome,
+        descricao
+      })
+    }).filter(oom => !oom.isFixa), "recursoId")
   })
 
   watch(now, async (v) => {
     objetivoMes.value =  await getObjetivoMesByMes(v)
   })
+
+  
 
   
   const showModal = ref(false)
