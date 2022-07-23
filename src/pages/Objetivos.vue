@@ -37,7 +37,7 @@
   <div >
     <p class="font-poppins text-sm" >{{om.descricao}}</p>
     <div>
-      <input  :value="om.valor" @input="handleSlide" type="range" :id="om.recursoId + ' ' + om.objetivoId" />
+      <input :value="om.valor" @input="handleSlide" type="range" :id="om.recursoId + ' ' + om.objetivoId" />
       <input @input="handleSlide" class="bg-transparent px-4" type="number" name="" :value="om.valor" :id="om.recursoId + ' ' + om.objetivoId">
     </div>
   </div>
@@ -66,6 +66,7 @@
 <div v-else>
   <p v-if="now > new Date().getTime()">Mes ainda nao foi planejado</p>
   <p v-else>Mes nao foi planejado</p>
+  <Button @click="copiarPlanejamentoAnterior" v-if="now > new Date().getTime()" label="Copiar planejamento anterior" />
 </div>
 
 
@@ -92,7 +93,7 @@ import ObjetivoForm from '../components/ObjetivoForm.vue'
 import ObjetivoMesForm from '../components/ObjetivoMesForm.vue'
 import MonthPicker from '../components/MonthPicker.vue'
 import { collection, onSnapshot } from "@firebase/firestore"
-import { db, getObjetivoMesByMes } from "../firebase"
+import { db, getObjetivoMesByMes, setObjetivoMes } from "../firebase"
 
 import _ from "lodash"
 
@@ -102,6 +103,8 @@ import { ref, computed, watch} from "vue"
 
 import { useStore } from "../store/main"
 import { isSameMonth } from '../utils/comparators'
+import { uuidv4 } from '@firebase/util'
+
 
     const now = ref(new Date().getTime())
   const objetivos = ref([]) 
@@ -110,6 +113,17 @@ import { isSameMonth } from '../utils/comparators'
 
   const recursos = ref([])
   // getRecursos().then(rec => console.log(rec))
+async function copiarPlanejamentoAnterior() {
+  const objetivoMesAnterior = await getObjetivoMesByMes(now.value - 2629746000)
+  objetivoMesAnterior.forEach(async om => {
+    om.timestamp = now.value
+    om.id = uuidv4()
+
+    await setObjetivoMes(om)
+  })
+  
+  console.log("🚀 ~ file: Objetivos.vue ~ line 117 ~ copiarPlanejamentoAnterior ~ objetivoMesAnterior", objetivoMesAnterior)
+}
 
   onSnapshot(collection(db, "recursoMes"), (snapshot) => {
     recursoMes.value = [];
@@ -143,10 +157,14 @@ import { isSameMonth } from '../utils/comparators'
     const ids = e.target.id.split(" ")
     const recursoId = ids.shift();
     const objetivoId = ids.shift();
+    const value = Number(e.target.value)
 
     objetivoMes.value.forEach(om => {
-      if(om.recursoId === recursoId && om.objetivoId === objetivoId) {
-        om.valor = Number(e.target.value);
+      const { valor } = objetivoMes.value.find(f => f.recursoId === recursoId && f.objetivoId === objetivoId)
+      const totalFixos = objetivoMes.value.filter(f => f.recursoId === recursoId && !f.isFixa).map(m => m.valor).reduce((a, b) => a + b, 0)
+      
+      if((om.recursoId === recursoId && om.objetivoId === objetivoId) && totalFixos - valor + Number(e.target.value) <= 100) {
+        om.valor = value;
       }
     })
   console.log("🚀 ~ file: Objetivos.vue ~ line 139 ~ handleSlide ~ e", e)
@@ -224,6 +242,7 @@ import { isSameMonth } from '../utils/comparators'
   })
 
   watch(now, async (v) => {
+    console.log("🚀 ~ file: Objetivos.vue ~ line 245 ~ watch ~ v", v)
     objetivoMes.value =  await getObjetivoMesByMes(v)
   })
 

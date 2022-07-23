@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, query, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, getDocs, addDocs } from 'firebase/firestore';
 import { uuidv4 } from "@firebase/util"
 import { onMounted, ref } from "vue";
 import { isSameMonth } from './utils/comparators';
@@ -28,6 +28,7 @@ export const getObjetivoMesByMes = async timestamp => {
   const querySnap = await getDocs(query(collection(db, 'objetivoMes')));
 
   querySnap.forEach((doc) => {
+    console.log("🚀 ~ file: firebase.ts ~ line 31 ~ querySnap.forEach ~ doc", doc.data())
     if(isSameMonth(timestamp, doc.data().timestamp)){
       objetivosMesByMes.push(doc.data())
     }
@@ -57,6 +58,12 @@ export const setRecurso = async ({nome}) => {
   return recursoSnapshot.id;
 }
 
+// export const setRecursos = async (recursos) => {
+//   const recursosCollection = collection(db, 'recursos');
+//   const recursoSnapshot = await addDocs(recursosCollection, recursos);
+//   return recursoSnapshot
+// }
+
 export const setRecursoMes = async ({recursoId, montante}) => {
   const timestamp = new Date().getTime();
   const recursosCollection = collection(db, 'recursoMes');
@@ -70,10 +77,10 @@ export const setObjetivo = async ({ descricao }) => {
   return recursoSnapshot.id;
 }
 
-export const setObjetivoMes = async ({isFixa, valor, recursoId, objetivoId}) => {
-  const timestamp = new Date().getTime();
+export const setObjetivoMes = async ({isFixa, valor, recursoId, objetivoId, timestamp}) => {
+  const unixtimestamp = timestamp || new Date().getTime();
   const recursosCollection = collection(db, 'objetivoMes');
-  const recursoSnapshot = await addDoc(recursosCollection, {id: uuidv4(), recursoId, isFixa, valor, objetivoId, timestamp});
+  const recursoSnapshot = await addDoc(recursosCollection, {id: uuidv4(), recursoId, isFixa, valor, objetivoId, timestamp: unixtimestamp});
   return recursoSnapshot.id;
 }
 
