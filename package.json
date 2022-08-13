@@ -8,8 +8,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "csv-parser": "^3.0.0",
+    "danfojs-node": "^1.1.1",
     "firebase": "^9.9.0",
+    "google-auth-library": "^8.1.1",
+    "google-spreadsheet": "^3.3.0",
+    "googleapis": "^105.0.0",
     "lodash": "^4.17.21",
+    "needle": "^3.1.0",
+    "papaparse": "^5.3.2",
     "pinia": "^2.0.14",
     "pinia-plugin-persistedstate": "^1.6.1",
     "uuid": "^8.3.2",

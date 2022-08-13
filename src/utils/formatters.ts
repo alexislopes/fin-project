@@ -1,9 +1,13 @@
 export function currency(amount) {
-  return `R$ ${amount}`
+  return Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+}).format(Number(amount))
+  
 }
 
 export function percentage(value) {
-  return `${value.toFixed(2)}%`
+  return `${Number(value || 0).toFixed(2)}%`
 }
 
 export function capitalize(str)  {
