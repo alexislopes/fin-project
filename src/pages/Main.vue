@@ -1,16 +1,18 @@
 <template>
-<div class="flex">
+  <div class="flex">
     <Nav />
-  <div class="p-16 w-full">
-    <component :is="currentView" />
+    <div class="p-16 bg-main w-full">
+      <component :is="currentView" />
+    </div>
   </div>
-</div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue'
 import Home from "./Home.vue"
 import Recursos from "./Recursos.vue"
+import Dashboard from "./Dashboard.vue"
+import RecursoAvancado from "./RecursoAvancado.vue"
 import Objetivos from "./Objetivos.vue"
 import Planejamentos from "./Planejamentos.vue"
 import NotFound from "./NotFound.vue"
@@ -20,19 +22,23 @@ const routes = {
   "": Home,
   "/home": Home,
   "/recursos": Recursos,
+  "/dashboard": Dashboard,
   "/objetivos": Objetivos,
-  "/planejamentos": Planejamentos}
- 
+  "/planejamentos": Planejamentos,
+  "/recursos/Alexis": RecursoAvancado,
+  "/recursos/Silvana": RecursoAvancado,
+}
 
- const currentPath = ref(window.location.hash)
+
+const currentPath = ref(window.location.hash)
 
 window.addEventListener('hashchange', () => {
+  console.log(window.location.hash.slice(1))
   currentPath.value = window.location.hash
-})
+});
 
 const currentView = computed(() => {
-  // @ts-ignore
-  return routes[currentPath.value.slice(1) || '/'] || Objetivos
-})
+  return routes[currentPath.value.slice(1) || '/'] || Dashboard
+});
 
 </script>

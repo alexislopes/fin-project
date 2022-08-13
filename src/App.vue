@@ -5,7 +5,7 @@ import Main from './pages/Main.vue'
 </script>
 
 <template>
-  <div >
+  <div class="bg-red" >
 
     <Main />
   </div>

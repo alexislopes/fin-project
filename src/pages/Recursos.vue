@@ -1,95 +1,72 @@
 <template>
-<div>
+  <div>
 
-  <MonthPicker @change="now = $event" :timestamp="now" />
-  <Button @click="showModal = true" class="text-medium" label="+ Criar Recurso" />
- 
+    <MonthPicker @change="now = $event" :timestamp="now" />
 
-<div class="flex gap-x-2">
-  <Card v-for="recurso in recursosComMontante" :key="now+recurso.id">
-    <div>
-      
-      <p>{{recurso.nome}}</p>
-    <p class="text-xs text-gray-300 font-poppins">{{currency(recurso.montante)}}</p>
+    <p class="text-2xl font-medium">Recusos</p>
+    <div v-if="!isDesiredMonth" class="bg-[#E0E0E0] p-3 w-fit text-xs rounded-md my-4">{{ `Mostrando dados do mes de
+    ${capitalize(new Date(recursos[0] ? recursos[0].timestamp : 0).toLocaleString("pt-BR", { month: "long" }))}
+    (retroativo)`}}</div>
+    <div class="flex content-center gap-x-10">
+      <Card class="min-w-[200px]" v-for="recurso in recursos" :key="now + recurso.name">
+        <div class="flex content-center relative flex-col">
+
+          <p class="text-center">{{ recurso.name }}</p>
+          <a :href="`#/recursos/${recurso.name}`" class="absolute right-0 left-auto">
+            <span class="hover:text-accent cursor-pointer material-icons text-medium text-[#4f4f4f] "> chevron_right
+            </span>
+          </a>
+          <p class="text-xs text-center text-gray-300 font-poppins">{{ currency(recurso.value) }}</p>
+          <span v-if="recurso.previous"
+            :class="{ 'bg-positive': (recurso.value - recurso.previous.value) * 100 / recurso.value > 0, 'bg-negative': (recurso.value - recurso.previous.value) * 100 / recurso.value < 0 }"
+            class=" text-white text-center w-fit mx-auto mt-2 py-1/2 px-2 rounded-full text-xs">
+            {{ percentage(((recurso.value - recurso.previous.value) * 100 / recurso.value)) }}
+            <span class="material-icons p-1/2" style="font-size: 0.8rem"> {{ (recurso.value - recurso.previous.value) *
+                100 / recurso.value > 0 ? 'trending_up' : 'trending_down'
+            }} </span>
+          </span>
+
+          <hr v-if="recurso.previous" class="hr3">
+
+          <div v-if="recurso.previous">
+            <span class="material-icons text-center w-full text-[#4f4f4f]"> undo </span>
+            <p class="text-center">Em {{ capitalize(new Date(recurso.previous.timestamp).toLocaleString("pt-BR", {
+                month:
+                  "long"
+              }))
+            }}</p>
+            <p class="text-xs text-center text-gray-300">{{ currency(recurso.previous.value) }}</p>
+          </div>
+        </div>
+      </Card>
     </div>
-    <p @click="recursoId = recurso.id" class="text-medium text-center text-black cursor-pointer">+</p>
-  </Card>
-</div>
-
-
-  <Modal v-show="showModal">
-    <Card>
-      <RecursoForm @close="showModal = false" />
-    </Card>
-  </Modal>
-
-  <Modal v-show="recursoId != 'undefined'">
-    <Card>
-      <RecursoMesForm @close="recursoId = 'undefined'" :recursoId="recursoId" />
-    </Card>
-  </Modal>
-      </div>
+  </div>
 </template>
 
-<script setup lang="ts">
-import RecursoForm from "../components/RecursoForm.vue"
-import RecursoMesForm from "../components/RecursoMesForm.vue"
-import Button from "../components/Button.vue"
-import Modal from "../components/Modal.vue"
+<script setup>
 import MonthPicker from '../components/MonthPicker.vue'
 import Card from '../components/Card.vue'
-import { currency } from "../utils/formatters"
-import { ref, computed, watch } from "vue"
-import { db, getRecursoMesByMes } from "../firebase"
-import { collection, onSnapshot } from "@firebase/firestore"
-import { isSameMonth } from "../utils/comparators"
+import { currency, percentage, capitalize } from "../utils/formatters"
+import { ref, watch } from "vue"
+import { getRecursosByMonth } from '../services'
+
+const now = ref(new Date().getTime())
+const isDesiredMonth = ref(false)
+const recursos = ref([])
 
 
-const range = ref(0)
+watch(now, async (v) => {
+  const response = await getRecursosByMonth(v)
+  isDesiredMonth.value = response.data.isDesired;
+  recursos.value = response.data.recursos
+}, { immediate: true });
+</script>
 
-
-  const recursoId = ref("undefined")
-  const showModal = ref(false)
-
-   const now = ref(new Date().getTime())
-
-  // getRecursos().then((data) => console.log(data))
-  const recursos = ref([])
-  const recursoMes = ref([])
-  // getRecursos().then(rec => console.log(rec))
-
-  onSnapshot(collection(db, "recursos"), (snapshot) => {
-    recursos.value = [];
-    snapshot.forEach(doc => recursos.value.push(doc.data()))
-  })
-
-  onSnapshot(collection(db, "recursoMes"), (snapshot) => {
-    recursoMes.value = [];
-    snapshot.forEach(doc => {
-      if(isSameMonth(now.value, doc.data().timestamp)){
-        recursoMes.value.push(doc.data())
-      }
-    })
-  })
-
-  const recursosComMontante = computed(() => { 
-    return recursos.value.map(recurso => {
-      let montante = recursoMes.value.find(rm => rm.recursoId === recurso.id)
-      return Object.assign(
-        recurso, 
-      {montante: montante ? montante.montante : 0 }
-      )
-      }
-    )
-  });
-
-  watch(now, async (v) => {
-    recursoMes.value =  await getRecursoMesByMes(v)
-    
-  });
-  
-    
-  
-
-  
-   </script>
+   <style scoped>
+   .hr3 {
+     margin: 0.8rem 0;
+     border: 0;
+     height: 1px;
+     background-image: linear-gradient(to right, transparent, #CCC, transparent);
+   }
+   </style>
