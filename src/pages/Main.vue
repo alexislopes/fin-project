@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <Nav />
-    <div class="p-16 bg-main w-full">
+    <div class="main p-16 bg-main w-full">
       <component :is="currentView" />
     </div>
   </div>
@@ -16,6 +16,7 @@ import RecursoAvancado from "./RecursoAvancado.vue"
 import Objetivos from "./Objetivos.vue"
 import Planejamentos from "./Planejamentos.vue"
 import NotFound from "./NotFound.vue"
+import Mercado from "./Mercado.vue"
 import Nav from "../components/Nav.vue"
 
 const routes = {
@@ -27,6 +28,7 @@ const routes = {
   "/planejamentos": Planejamentos,
   "/recursos/Alexis": RecursoAvancado,
   "/recursos/Silvana": RecursoAvancado,
+  "/mercado": Mercado
 }
 
 
@@ -42,3 +44,11 @@ const currentView = computed(() => {
 });
 
 </script>
+
+<style>
+@media print {
+  .main {
+    padding: 0;
+  }
+}
+</style>

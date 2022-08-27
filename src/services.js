@@ -15,3 +15,7 @@ export const getObjetivos = async () => {
 export const getDashboard = async () => {
   return await axios.get("/api/dashboard");
 };
+
+export const getMercado = async () => {
+  return await axios.get("/api/mercado")
+}

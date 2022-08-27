@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="min-h-screen flex rounded-md text-slate-500 shadow-lg w-[calc(6rem_-_32px)]] overflow-hidden transition duration-200 ease-out  p-4 flex-col gap-2">
+    class="nav min-h-screen flex rounded-md text-slate-500 shadow-lg w-[calc(6rem_-_32px)]] overflow-hidden transition duration-200 ease-out  p-4 flex-col gap-2">
 
 
 
@@ -43,5 +43,11 @@ aside.is-expanded {
 
 aside.is-expanded.menu-toggle-wrap {
   top: -3rem;
+}
+
+@media print {
+  aside {
+    display: none;
+  }
 }
 </style>
